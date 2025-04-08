@@ -1,0 +1,37 @@
+% Ludo Game Simulation - Static Logic for GNU Prolog or Online Compilers
+
+% Entry point
+start :-
+    play_game(50).  % Simulate up to 50 turns
+
+% Main game loop
+play_game(MaxTurns) :-
+    play_turns(1, MaxTurns, 0, 0).
+
+% Recursively play turns
+play_turns(Turn, Max, Pos1, Pos2) :-
+    Turn =< Max,
+    format('~n--- Turn ~w ---~n', [Turn]),
+    
+    roll_dice(D1),
+    NewPos1 is Pos1 + D1,
+    format('Player 1 rolled ~w and moved to ~w~n', [D1, NewPos1]),
+    
+    ( NewPos1 >= 100 ->
+        write('🎉 Player 1 wins! 🎉'), nl
+    ;
+        roll_dice(D2),
+        NewPos2 is Pos2 + D2,
+        format('Player 2 rolled ~w and moved to ~w~n', [D2, NewPos2]),
+        
+        ( NewPos2 >= 100 ->
+            write('🎉 Player 2 wins! 🎉'), nl
+        ;
+            NextTurn is Turn + 1,
+            play_turns(NextTurn, Max, NewPos1, NewPos2)
+        )
+    ).
+
+% Roll a 6-sided die
+roll_dice(Value) :-
+    random(1, 7, Value).
